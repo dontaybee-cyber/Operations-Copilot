@@ -1,0 +1,26 @@
+A high-resolution, top-down digital scan of a business invoice. 
+Layout: White background with a distinct blue header bar across the items table. A rectangular box in the top right corner says 'YOUR LOGO HERE'. 
+Content: 
+- Vendor: Amazon Web Services 
+- Invoice#: 00004 
+- Date: 02/19/2026 
+- Table Item: 'Cloud Infrastructure Services' for $840.50. 
+Style: Direct, flat lighting, filling the entire frame like a PDF export. No background objects.
+
+A high-resolution, top-down digital scan of a business invoice. 
+Layout: White background with a distinct blue header bar across the items table. A rectangular box in the top right corner says 'YOUR LOGO HERE'. 
+Content: 
+- Vendor: Pro Cloud SaaS 
+- Invoice#: 00007 
+- Date: 02/19/2026 
+- Table Item: 'Monthly Software Subscription' for $1,250.00. 
+Note: This must look identical in structure to invoice 00001 to test duplicate detection.
+
+A high-resolution, top-down digital scan of a business invoice. 
+Layout: White background with a distinct blue header bar across the items table. A rectangular box in the top right corner says 'YOUR LOGO HERE'. 
+Content: 
+- Vendor: Office Depot 
+- Invoice#: 00008 
+- Date: 02/19/2026 
+- Table Item: 'Office Supplies and Furniture' for $450.25. 
+Style: Crisp black text, professional business formatting.
