@@ -2,6 +2,7 @@ import os
 import json
 import pandas as pd
 import google.generativeai as genai
+import streamlit as st
 from dotenv import load_dotenv
 
 # --- Configuration & Setup ---
@@ -15,11 +16,27 @@ LOG_FILE = os.path.join(DATA_DIR, 'master_ops_log.csv')
 REPORT_FILE = os.path.join(DATA_DIR, 'anomalies_report.json')
 
 def configure_genai():
-    """Configures the Google Generative AI model, checking for API key."""
-    api_key = os.getenv("GEMINI_API_KEY")
+    """Configures the Google Generative AI model, checking for API key.
+
+    Cloud: uses Streamlit secrets (st.secrets["GEMINI_API_KEY"])
+    Local: falls back to environment variable (os.getenv("GEMINI_API_KEY"))
+    """
+    api_key = None
+
+    # Streamlit Cloud / deployed environments
+    try:
+        api_key = st.secrets["GEMINI_API_KEY"]
+    except Exception:
+        api_key = None
+
+    # Local dev fallback
     if not api_key:
-        print("🔴 ERROR: GEMINI_API_KEY not found in .env file. Cannot generate insights.")
+        api_key = os.getenv("GEMINI_API_KEY")
+
+    if not api_key:
+        print("🔴 ERROR: GEMINI_API_KEY not found in Streamlit secrets or environment. Cannot generate insights.")
         return False
+
     genai.configure(api_key=api_key)
     return True
 

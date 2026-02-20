@@ -38,8 +38,18 @@ def bulk_process_invoices():
     print("Starting bulk processing engine...")
     
     # 1. Check for API Key first to avoid unnecessary processing
-    if not os.getenv("GEMINI_API_KEY"):
-        print("🔴 ERROR: GEMINI_API_KEY not found in .env file. Aborting.")
+    api_key = None
+    try:
+        import streamlit as st
+        api_key = st.secrets.get("GEMINI_API_KEY")
+    except Exception:
+        api_key = None
+
+    if not api_key:
+        api_key = os.getenv("GEMINI_API_KEY")
+
+    if not api_key:
+        print("🔴 ERROR: GEMINI_API_KEY not found in Streamlit secrets or environment. Aborting.")
         return
 
     # 2. Duplicate Prevention: Get list of already processed files
@@ -58,8 +68,7 @@ def bulk_process_invoices():
         if filename in processed_files:
             continue # Skip already processed files
             
-        print(f"
-Processing new file: {filename}")
+        print(f"\nProcessing new file: {filename}")
         
         # 5. Error Handling per file
         try:
@@ -88,8 +97,7 @@ Processing new file: {filename}")
 
     # 8. Save new records to CSV
     if new_records:
-        print(f"
-Found {len(new_records)} new records to save.")
+        print(f"\nFound {len(new_records)} new records to save.")
         new_df = pd.DataFrame(new_records)
         
         # Reorder columns to have source_file first, if it exists
@@ -102,8 +110,7 @@ Found {len(new_records)} new records to save.")
         new_df.to_csv(LOG_FILE, mode='a', header=header, index=False)
         print(f"Successfully appended new data to {LOG_FILE}")
     else:
-        print("
-No new invoice files to process.")
+        print("\nNo new invoice files to process.")
         
     print("Bulk processing complete.")
 

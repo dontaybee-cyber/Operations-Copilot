@@ -4,9 +4,21 @@ import fitz  # PyMuPDF
 import google.generativeai as genai
 from dotenv import load_dotenv
 
-# Load API Key
+# Load API Key (Streamlit Cloud secrets first, env var fallback for local)
 load_dotenv()
-genai.configure(api_key=os.getenv("GEMINI_API_KEY"))
+
+api_key = None
+try:
+    import streamlit as st
+    api_key = st.secrets.get("GEMINI_API_KEY")
+except Exception:
+    api_key = None
+
+if not api_key:
+    api_key = os.getenv("GEMINI_API_KEY")
+
+if api_key:
+    genai.configure(api_key=api_key)
 
 def extract_text_from_pdf(pdf_path):
     """Extracts raw text from a PDF file."""
@@ -61,7 +73,7 @@ if __name__ == "__main__":
     # so we'll just inform the user.
     if os.path.exists(sample_path):
         print(f"Analyzing '{sample_path}'...")
-        if os.getenv("GEMINI_API_KEY"):
+        if api_key:
             raw = extract_text_from_pdf(sample_path)
             if raw.strip():
                 structured_data = analyze_with_gemini(raw)
@@ -71,8 +83,8 @@ if __name__ == "__main__":
                 print("Could not extract text from the PDF. It might be an image-based PDF.")
                 print("Consider using an OCR-based approach for such documents.")
         else:
-            print("\nSkipping analysis because GEMINI_API_KEY is not set in .env")
-            print("Please create a .env file and add: GEMINI_API_KEY='your_key_here'")
+            print("\nSkipping analysis because GEMINI_API_KEY is not set in Streamlit secrets or environment")
+            print("Set Streamlit Cloud secret GEMINI_API_KEY or create a local .env with GEMINI_API_KEY='your_key_here'")
             
     else:
         print(f"Please add a PDF invoice to '{sample_path}' to test the extraction.")
