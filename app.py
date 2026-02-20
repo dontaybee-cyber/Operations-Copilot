@@ -4,8 +4,13 @@ import os
 import json
 import subprocess
 import sys
+from pathlib import Path
 
-st.image("logo.png", width=200)
+# Robust pathing for local + Streamlit Cloud (Linux)
+PROJECT_ROOT = Path(__file__).resolve().parent
+LOGO_PATH = PROJECT_ROOT / "logo.png"
+if LOGO_PATH.exists():
+    st.image(str(LOGO_PATH), width=200)
 
 # --- Page Configuration (Branding Update) ---
 st.set_page_config(
@@ -19,6 +24,13 @@ PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(PROJECT_ROOT, 'data')
 LOG_FILE = os.path.join(DATA_DIR, 'master_ops_log.csv')
 REPORT_FILE = os.path.join(DATA_DIR, 'anomalies_report.json')
+
+# --- Gemini API Key (Streamlit Cloud secrets first, env fallback for local) ---
+GEMINI_API_KEY = None
+try:
+    GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
+except Exception:
+    GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 # Direct import from the modular_scripts package
 from modular_scripts.analysis.anomaly_detector import get_insights_from_gemini
